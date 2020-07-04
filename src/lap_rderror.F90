@@ -11,6 +11,8 @@ subroutine lap_rderror(errbnd,rnge,nlap)
  implicit none
 
 #include "consts.h"
+#cmakedefine LAPLACE_ROOT "@LAPLACE_ROOT@"
+#cmakedefine LAPLACE_INSTALL "@LAPLACE_INSTALL@"
 
 ! constants:
  logical, parameter :: locdbg = .false.
@@ -29,7 +31,7 @@ subroutine lap_rderror(errbnd,rnge,nlap)
 
 ! local:
  integer :: iopt, ios, itmp1, itmp2
- logical :: found_token, lower
+ logical :: found_token, lower, file_exists
  character(len=5)  :: ctmp
  character(len=11) :: token, cdummy
  character(len=80) :: line
@@ -39,9 +41,16 @@ subroutine lap_rderror(errbnd,rnge,nlap)
  if (locdbg) write(istdout,"(a)") chrdbg//"enter lap_rderror ..."
 
  ! get absolute path to data files
- call getenv("LAPLACE_ROOT",rootdir)
- rootdir = adjustl(rootdir)
+ !call getenv("LAPLACE_ROOT",rootdir)
+ rootdir = adjustl(LAPLACE_ROOT)
  filerr  = trim(rootdir)//"/data/init_error.txt"
+ 
+ inquire(file=filerr, exist=file_exists)
+ 
+ IF (.NOT. file_exists) THEN
+   rootdir = adjustl(LAPLACE_INSTALL)
+   filerr  = trim(rootdir)//"/data/init_error.txt"
+ ENDIF
 
  rlen = rnge(2)/rnge(1)
 

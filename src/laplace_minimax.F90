@@ -119,7 +119,7 @@ subroutine laplace_minimax(errmax,xpnts,wghts,nlap,ymin,ymax,&
  else
   mxitr0 = 50
  end if
-
+ 
  if (present(iprint)) then
   iprnt0 = iprint
  else
@@ -137,7 +137,7 @@ subroutine laplace_minimax(errmax,xpnts,wghts,nlap,ymin,ymax,&
  else
   tlrng0 = 1.D-10
  end if
-
+ 
  if (present(tolpar)) then
   tlpar0 = tolpar
  else
@@ -246,6 +246,8 @@ subroutine laplace_minimax(errmax,xpnts,wghts,nlap,ymin,ymax,&
   write(istdout,*) chrdbg,"mxitr0:",mxitr0
   write(istdout,*) chrdbg,"stpmx0:",stpmx0
  end if
+ 
+ PRINT*, "HERE11"
 
  if (iand(iprnt0,8).eq.8) then
   write(istdout,"(/a)") "----------------------"

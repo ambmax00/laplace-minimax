@@ -11,6 +11,8 @@ subroutine lap_rddata(xpnts,wghts,rnge,nlap)
  implicit none
 
 #include "consts.h"
+#cmakedefine LAPLACE_ROOT "@LAPLACE_ROOT@"
+#cmakedefine LAPLACE_INSTALL "@LAPLACE_INSTALL@"
 
 ! constants:
  logical, parameter :: locdbg = .false.
@@ -29,7 +31,7 @@ subroutine lap_rddata(xpnts,wghts,rnge,nlap)
 
 ! local:
  integer :: iopt, ios, itmp1, itmp2, ichr, jopt, nlapa, nlapo
- logical :: found_token, lower
+ logical :: found_token, lower, file_exists
  character(len=5)  :: ctmp
  character(len=11) :: token
  character(len=80) :: line
@@ -39,9 +41,16 @@ subroutine lap_rddata(xpnts,wghts,rnge,nlap)
  if (locdbg) write(istdout,"(a)") chrdbg//"enter lap_rddata ..."
 
  ! get absolute path to data files
- call getenv("LAPLACE_ROOT",rootdir)
- rootdir = adjustl(rootdir)
+ !call getenv("LAPLACE_ROOT",rootdir)
+ rootdir = adjustl(LAPLACE_ROOT)
  fildat  = trim(rootdir)//"/data/init_para.txt"
+ 
+ inquire(file=fildat, exist=file_exists)
+ 
+ IF (.NOT. file_exists) THEN
+   rootdir = adjustl(LAPLACE_INSTALL)
+   fildat  = trim(rootdir)//"/data/init_para.txt"
+ ENDIF
 
  rlen = rnge(2)/rnge(1)
 

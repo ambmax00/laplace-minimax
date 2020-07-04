@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.12 FATAL_ERROR)
 
 # project name
 project(laplace-minimax Fortran)
@@ -27,19 +27,26 @@ endif()
 include_directories(    ${PROJECT_SOURCE_DIR}/inc 
     )
 
+#set(LAPLACE_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR})
+set(LAPLACE_INSTALL ${CMAKE_INSTALL_PREFIX})
+set(LAPLACE_ROOT ${CMAKE_CURRENT_BINARY_DIR})
+configure_file(${PROJECT_SOURCE_DIR}/src/lap_rddata.F90 ${CMAKE_CURRENT_BINARY_DIR}/src/lap_rddata.F90 @ONLY)
+configure_file(${PROJECT_SOURCE_DIR}/src/lap_rderror.F90 ${CMAKE_CURRENT_BINARY_DIR}/src/lap_rderror.F90 @ONLY)
+
 # source files
 set(SOURCES
     ${PROJECT_SOURCE_DIR}/inc/consts.h
     ${PROJECT_SOURCE_DIR}/inc/laplace_minimax.h
     ${PROJECT_SOURCE_DIR}/src/dd128_arithmetics.F90
     ${PROJECT_SOURCE_DIR}/src/dd128_linalg.F90
-    ${PROJECT_SOURCE_DIR}/src/lap_rderror.F90
-    ${PROJECT_SOURCE_DIR}/src/lap_rddata.F90
+    ${CMAKE_CURRENT_BINARY_DIR}/src/lap_rderror.F90
+    ${CMAKE_CURRENT_BINARY_DIR}/src/lap_rddata.F90
     ${PROJECT_SOURCE_DIR}/src/lap_paraopt.F90 
     ${PROJECT_SOURCE_DIR}/src/lap_maehly.F90
     ${PROJECT_SOURCE_DIR}/src/lap_rmsd.F90
     ${PROJECT_SOURCE_DIR}/src/lap_numlap.F90
     ${PROJECT_SOURCE_DIR}/src/laplace_minimax.F90
+    ${PROJECT_SOURCE_DIR}/src/laplace_minimax_c.F
 )
 
 # test source files
@@ -76,6 +83,4 @@ install(FILES ${PROJECT_SOURCE_DIR}/inc/laplace_minimax.h
 # copy data files
 install(FILES ${DATA} DESTINATION data)
 
-# .. if this has any effect?
-set(ENV{LAPLACE_ROOT} ${CMAKE_INSTALL_PREFIX})
 
